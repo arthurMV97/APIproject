@@ -6,12 +6,12 @@ let datalist = document.querySelector('datalist')
 let discoverInput = document.querySelector('#discover')
 let section= document.querySelector('section')
 let voyelleRgx = /A|E|I|O|U|Y/;
-
+let borders = []
 
 let request = new XMLHttpRequest();
 request.open("GET", 'https://restcountries.eu/rest/v2/all')
 
-request.onload = () => {
+request.onload = function () {
     let data = JSON.parse(request.response)
     for (element of data) {
         arrayPaysMaj.push(element.name)
@@ -43,11 +43,25 @@ input.addEventListener('input', () => {
 discoverInput.addEventListener('click', () => {
     let object = arrayInfos.filter(element => element.name === input.value)
     console.log(object)
+    let borderObject = object[0].borders
+    let html = []
+    
+
+    for (element of arrayInfos) {
+        for (let i = 0; i < borderObject.length; i++){
+        if (element.cioc === borderObject[i]) {
+            html.push(element.name)
+            console.log(html)
+        }
+    }}
+
+
         let newDiv = document.createElement('div');
         newDiv.className = 'infos'
         newDiv.innerHTML = `<img src=${object[0].flag}> <p>La population de ${object[0].name} est de ${object[0].population} habitants</p><p>Sa capitale est ${object[0].capital}</p> <p>Sa monnaie est ${(voyelleRgx.test(object[0].currencies[0].name)? "l'" : "le ")}${object[0].currencies[0].name} ${object[0].currencies[0].symbol}</p> <p>Ce pays est situé en ${object[0].region}, plus précisement en ${object[0].subregion} `
-        
-        
-        
+        let newP = document.createElement('p');
+        newP.innerHTML = `Les pays frontaliers sont: ${html.join(', ')}`
+        newDiv.appendChild(newP)
         section.appendChild(newDiv)
 })
+
